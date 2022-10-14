@@ -89,5 +89,5 @@ const authJwt={
     isAdmin,
     isModerator
 }
-modules.exports = authJwt
+module.exports = authJwt
 

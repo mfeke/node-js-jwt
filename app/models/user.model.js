@@ -8,9 +8,9 @@ const User = mongoose.model(
         username : String,
         email: String,
         password: String,
-        role:[
+        roles:[
             {
-                type: mongoose.Schema.type.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Role"
             }
         ]

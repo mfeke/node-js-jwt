@@ -1,40 +1,43 @@
 const config = require("../config/auth.config")
 const db = require("../models")
-const User = db.role
+const User = db.user
 var jwt = require("jsonwebtoken")
 var bcrypt = require("bcryptjs")
-const { user } = require("../models")
-const Role = require("../models/role.model")
+const Role = db.role
 
 exports.signup =(req, res)=>{
+    
     const user = new User({
         username: req.body.username,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8)
 
     }); 
+    
     user.save((err, user)=> {
         if(err){
             res.status(500).send({message:err})
 
             return
         }
+        
         if(req.body.roles){
             Role.find(
                 {
                 name: { $in: req.body.roles }
                 },
+                
                 (err, roles) => {
                     if (err) {
-                    res.status(500).send({ message: err });
-                    return;
+                        res.status(500).send({ message: err });
+                        return;
                     }
 
                     user.roles = roles.map(role => role._id);
                     
                     user.save(err =>{
                         if(err){
-                            res.status(500).send("message:err")
+                            res.status(500).send({message:err})
 
                             return
                         }
@@ -52,7 +55,7 @@ exports.signup =(req, res)=>{
                     return
                 }
                 user.roles = [role._id];
-
+                
                 user.save(err=>{
 
                     if(err){
@@ -76,7 +79,7 @@ exports.signin = (req, res) =>{
         username: req.body.username
     }).populate("roles","-__v" )
 
-    exec((err, user) => {
+    .exec((err, user) => {
 
         if(err){
             res.status(500).send({message:err})
@@ -113,7 +116,7 @@ exports.signin = (req, res) =>{
             username: user.username, 
             email: user.email,
             roles: authorities,
-             accessToken:token
+            accessToken:token
 
         })
     })

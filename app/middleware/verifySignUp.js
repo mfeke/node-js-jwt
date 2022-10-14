@@ -1,10 +1,9 @@
-const { exec } = require("child_process");
-const { user, ROLES } = require("../models");
+
 const db = require("../models")
-const Role =  db.ROLES 
+const Roles =  db.ROLES 
 const User = db.user;
 
-checkDuplicateUsernameOrEmail= (res, req ,next) =>{
+const checkDuplicateUsernameOrEmail = (req, res ,next) =>{
     User.findOne({
         username:req.body.username
     }).exec((err, user) =>{
@@ -22,7 +21,7 @@ checkDuplicateUsernameOrEmail= (res, req ,next) =>{
     User.findOne({
         email:req.body.email
     }).exec((err, user) =>{
-        if (er){
+        if (err){
             res.status(500).send({message:err})
             return
         }
@@ -34,15 +33,19 @@ checkDuplicateUsernameOrEmail= (res, req ,next) =>{
         next()
     })
 }
-checkRolesExisted =(req, res, next) =>{
-    for(let i =0;i<req.body.roles.length; i++){
-     if (!ROLES.includes(req.body.roles[isFinite])){
-        res.status(400).send({
-            message:`Failed! Role ${req.body.roles[i]} does not exist`
-        })
-        return
-     } 
+ const checkRolesExisted = (req, res, next) =>{
+    
+    if(req.body.roles){
+        for(let i =0;i<req.body.roles.length; i++){
+            if (!Roles.includes(req.body.roles[i])){
+               res.status(400).send({
+                   message:`Failed! Role ${req.body.roles[i]} does not exist`
+               })
+               return
+            } 
+           }
     }
+    
     next()  
 }
 const verifySignUp = {
