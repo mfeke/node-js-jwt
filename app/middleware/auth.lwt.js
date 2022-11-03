@@ -50,6 +50,7 @@ const isAdmin = (req, res, next)=>{
 const isModerator =(req, res , next) =>{
     User.findById(req.userld).exec((err,user) => {
 
+       console.log(user)
         if(err){
             res.status(500).send({message:err})
             
